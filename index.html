@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Laporan Kas Bersama</title>
+  <meta name="description" content="Dashboard laporan transparansi kas bersama, mudah dibaca dan detail di HP." />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons & Chart.js -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Custom clean scrollbars & styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.4);
+      border-radius: 9999px;
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    .tap-highlight-transparent {
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased min-h-full flex flex-col pb-20 md:pb-8 transition-colors duration-200">
+
+  <!-- ================= TOP HEADER ================= -->
+  <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 transition-colors">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i data-lucide="wallet" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-base md:text-lg leading-tight flex items-center gap-1.5">
+            Laporan Kas
+            <span id="liveStatusBadge" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>
+              Live
+            </span>
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+            <span id="lastUpdatedText">Memuat data...</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button id="btnRefresh" onclick="fetchData(true)" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition active:scale-95" title="Refresh Data">
+          <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i>
+        </button>
+        <button id="btnShareWA" onclick="copyWhatsAppReport()" class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition active:scale-95 flex items-center gap-1.5 text-xs font-semibold" title="Salin Ringkasan untuk WhatsApp">
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Share WA</span>
+        </button>
+        <button id="btnThemeToggle" onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition active:scale-95" title="Ganti Tema">
+          <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
+          <i data-lucide="sun" class="w-4 h-4 block dark:hidden"></i>
+        </button>
+        <button onclick="openConfigModal()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition active:scale-95" title="Pengaturan Sumber Data">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-5 space-y-5">
+
+    <!-- Notice Banner if offline or error -->
+    <div id="errorBanner" class="hidden p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-200 text-xs flex items-start gap-3">
+      <i data-lucide="alert-triangle" class="w-5 h-5 text-rose-500 shrink-0 mt-0.5"></i>
+      <div class="flex-1">
+        <p class="font-bold text-sm" id="errorMessage">Gagal memuat data dari Google Sheet.</p>
+        <p class="mt-1 text-rose-600 dark:text-rose-300" id="errorDetail">Pastikan Sheet dibagikan publik (Viewer) atau cek Sheet ID di tombol Pengaturan.</p>
+      </div>
+    </div>
+
+    <!-- ================= 4 STAT CARDS ================= -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <!-- Total Kas Card -->
+      <div class="col-span-2 sm:col-span-1 p-4 rounded-2xl bg-gradient-to-br from-brand-600 to-indigo-700 text-white shadow-lg shadow-brand-600/20 relative overflow-hidden">
+        <div class="absolute -right-2 -bottom-2 opacity-10 pointer-events-none">
+          <i data-lucide="wallet" class="w-24 h-24"></i>
+        </div>
+        <p class="text-xs font-medium text-brand-100 uppercase tracking-wider">Total Kas Masuk</p>
+        <h3 class="text-2xl md:text-3xl font-extrabold mt-1 tracking-tight" id="statTotalNominal">Rp 0</h3>
+        <p class="text-[11px] text-brand-200 mt-2 flex items-center gap-1" id="statAvgPerEntry">
+          <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Rata-rata: Rp 0/setor
+        </p>
+      </div>
+
+      <!-- Total Transaksi -->
+      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+          <span class="text-xs font-medium uppercase tracking-wider">Transaksi</span>
+          <div class="p-2 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
+            <i data-lucide="receipt" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="mt-2">
+          <h4 class="text-xl md:text-2xl font-bold tracking-tight" id="statTotalCount">0</h4>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Total pencatatan kas</p>
+        </div>
+      </div>
+
+      <!-- Anggota Aktif -->
+      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+          <span class="text-xs font-medium uppercase tracking-wider">Kontributor</span>
+          <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
+            <i data-lucide="users" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="mt-2">
+          <h4 class="text-xl md:text-2xl font-bold tracking-tight" id="statActiveMembers">0 / 17</h4>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1" id="statMemberPct">0% sudah setor</p>
+        </div>
+      </div>
+
+      <!-- Terakhir Setor -->
+      <div class="col-span-2 sm:col-span-1 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
+          <span class="text-xs font-medium uppercase tracking-wider">Terbaru</span>
+          <div class="p-2 rounded-lg bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400">
+            <i data-lucide="clock" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="mt-2">
+          <h4 class="text-sm md:text-base font-bold truncate" id="statLatestName">-</h4>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate" id="statLatestDetail">Belum ada transaksi</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= NAVIGATION TABS (DESKTOP / INLINE) ================= -->
+    <div class="flex items-center justify-between bg-slate-200/60 dark:bg-slate-900 p-1 rounded-xl text-xs font-semibold">
+      <button onclick="switchTab('members')" id="tabBtn-members" class="flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm">
+        <i data-lucide="users" class="w-4 h-4"></i>
+        <span>Per Anggota</span>
+      </button>
+      <button onclick="switchTab('history')" id="tabBtn-history" class="flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <i data-lucide="list" class="w-4 h-4"></i>
+        <span>Riwayat Transaksi</span>
+      </button>
+      <button onclick="switchTab('stats')" id="tabBtn-stats" class="flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <i data-lucide="pie-chart" class="w-4 h-4"></i>
+        <span>Statistik & Metode</span>
+      </button>
+    </div>
+
+    <!-- ================= TAB 1: PER ANGGOTA ================= -->
+    <section id="tabContent-members" class="space-y-4">
+      <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
+        <!-- Search bar -->
+        <div class="relative flex-1">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" id="searchMemberInput" oninput="renderMembers()" placeholder="Cari nama anggota..." class="w-full pl-9 pr-4 py-2 text-xs md:text-sm rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" />
+        </div>
+        <!-- Sort Dropdown -->
+        <div class="flex items-center gap-2">
+          <select id="sortMemberSelect" onchange="renderMembers()" class="text-xs py-2 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="nominal-desc">Iuran Terbanyak ⬇️</option>
+            <option value="nominal-asc">Iuran Tersedikit ⬆️</option>
+            <option value="name-asc">Nama (A - Z)</option>
+            <option value="latest">Terakhir Setor</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Member Grid / Cards -->
+      <div id="memberCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: RIWAYAT TRANSAKSI ================= -->
+    <section id="tabContent-history" class="space-y-4 hidden">
+      <!-- Filter Bar -->
+      <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 space-y-2.5 shadow-sm">
+        <div class="flex flex-col sm:flex-row gap-2">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="searchHistoryInput" oninput="renderHistory()" placeholder="Cari nama atau catatan..." class="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+          <select id="filterViaSelect" onchange="renderHistory()" class="text-xs py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:outline-none">
+            <option value="">Semua Metode (Via)</option>
+            <option value="Dana">Dana</option>
+            <option value="Cash">Cash</option>
+            <option value="BCA">BCA</option>
+            <option value="BRI">BRI</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Transactions List -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden">
+        <div class="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <h3 class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <i data-lucide="history" class="w-4 h-4 text-brand-500"></i>
+            Daftar Setoran Masuk
+          </h3>
+          <span class="text-[11px] text-slate-500 dark:text-slate-400" id="filteredCountText">0 transaksi</span>
+        </div>
+
+        <div id="historyListContainer" class="divide-y divide-slate-100 dark:divide-slate-800/60">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: STATISTIK & METODE ================= -->
+    <section id="tabContent-stats" class="space-y-4 hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Breakdown Metode Pembayaran -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+          <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
+            <i data-lucide="credit-card" class="w-4 h-4 text-brand-500"></i>
+            Metode Pembayaran (Via)
+          </h3>
+          <div class="h-56 relative flex items-center justify-center">
+            <canvas id="viaChart"></canvas>
+          </div>
+          <div id="viaLegendList" class="mt-4 grid grid-cols-2 gap-2 text-xs">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Top Kontributor -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
+              <i data-lucide="award" class="w-4 h-4 text-amber-500"></i>
+              Top 5 Kontributor Terbanyak
+            </h3>
+            <div id="topContributorsList" class="space-y-2.5">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+          <div class="mt-4 p-3 rounded-xl bg-brand-50 dark:bg-brand-950/40 border border-brand-100 dark:border-brand-900/50 text-[11px] text-brand-800 dark:text-brand-300">
+            💡 Semua data ditarik otomatis dan transparan dari Google Sheet.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= BOTTOM NAVIGATION BAR (MOBILE ONLY) ================= -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 md:hidden safe-bottom">
+    <div class="grid grid-cols-3 py-1.5 text-[11px] font-semibold text-center">
+      <button onclick="switchTab('members')" id="bnav-members" class="flex flex-col items-center justify-center py-1 text-brand-600 dark:text-brand-400 tap-highlight-transparent">
+        <i data-lucide="users" class="w-5 h-5 mb-0.5"></i>
+        <span>Anggota</span>
+      </button>
+      <button onclick="switchTab('history')" id="bnav-history" class="flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 tap-highlight-transparent">
+        <i data-lucide="receipt" class="w-5 h-5 mb-0.5"></i>
+        <span>Riwayat</span>
+      </button>
+      <button onclick="switchTab('stats')" id="bnav-stats" class="flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 tap-highlight-transparent">
+        <i data-lucide="pie-chart" class="w-5 h-5 mb-0.5"></i>
+        <span>Statistik</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================= MODAL: DETAIL ANGGOTA ================= -->
+  <div id="memberDetailModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in slide-in-from-bottom duration-200">
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+        <div class="flex items-center gap-3">
+          <div id="modalMemberAvatar" class="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/60 text-brand-600 dark:text-brand-300 font-bold flex items-center justify-center text-sm">
+            Y
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-slate-800 dark:text-white" id="modalMemberName">Nama Anggota</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400" id="modalMemberTotal">Total Iuran: Rp 0</p>
+          </div>
+        </div>
+        <button onclick="closeMemberModal()" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto flex-1 space-y-3" id="modalMemberTransactions">
+        <!-- List of transactions by this member -->
+      </div>
+
+      <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-center">
+        <button onclick="closeMemberModal()" class="w-full py-2.5 px-4 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white text-xs font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PENGATURAN SUMBER DATA ================= -->
+  <div id="configModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="font-bold text-sm flex items-center gap-2">
+          <i data-lucide="settings" class="w-4 h-4 text-brand-500"></i>
+          Pengaturan Sumber Data
+        </h3>
+        <button onclick="closeConfigModal()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-4 space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Google Sheet ID</label>
+          <input type="text" id="cfgSheetId" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="112HDYnXS-xrabvV30f9LP7UeBaCXCbJVRwZEDBvPJvo" />
+          <p class="text-[10px] text-slate-400 mt-1">ID diambil dari URL spreadsheet (antara /d/ dan /edit).</p>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Nama Tab Sheet</label>
+          <input type="text" id="cfgSheetName" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="Kas" />
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Apps Script Web App URL (Opsional)</label>
+          <input type="text" id="cfgWebAppUrl" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="https://script.google.com/macros/s/.../exec" />
+        </div>
+
+        <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-800 dark:text-amber-200 text-[11px]">
+          ⚠️ <strong>Penting:</strong> Pastikan spreadsheet Google Sheet telah dibagikan dengan akses <em>"Anyone with the link can view"</em> (Siapa saja yang memiliki link dapat melihat).
+        </div>
+      </div>
+
+      <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex justify-end gap-2">
+        <button onclick="closeConfigModal()" class="px-3 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold">Batal</button>
+        <button onclick="saveConfigAndReload()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-500/20">Simpan & Muat Ulang</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-full text-xs font-semibold shadow-lg hidden transition-all duration-300 flex items-center gap-2">
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 dark:text-emerald-600"></i>
+    <span id="toastMessage">Pesan</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // --- 1. CONFIGURATION & STATE ---
+    const DEFAULT_MEMBERS = [
+      "Yusuf", "Almer", "Alifa", "Nata", "Ibnu",
+      "Taki", "Rafasya", "Abbas", "Fathan", "Dijah",
+      "Adil", "Khanza", "Faida", "Zalva", "Adibah",
+      "Auzan", "Chafidzah"
+    ];
+
+    const CONFIG_KEY = 'kas_report_config_v1';
+    let appConfig = {
+      sheetId: '112HDYnXS-xrabvV30f9LP7UeBaCXCbJVRwZEDBvPJvo',
+      sheetName: 'Kas',
+      webAppUrl: ''
+    };
+
+    let rawData = [];
+    let activeTab = 'members';
+    let viaChartInstance = null;
+
+    // Load saved config
+    try {
+      const saved = localStorage.getItem(CONFIG_KEY);
+      if (saved) {
+        appConfig = { ...appConfig, ...JSON.parse(saved) };
+      }
+    } catch (e) {}
+
+    // --- 2. DARK MODE LOGIC ---
+    function initTheme() {
+      const isDark = localStorage.getItem('theme') === 'dark' || 
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      if (viaChartInstance) {
+        renderViaChart();
+      }
+    }
+
+    // --- 3. TAB SWITCHING ---
+    function switchTab(tabId) {
+      activeTab = tabId;
+      ['members', 'history', 'stats'].forEach(t => {
+        const content = document.getElementById(`tabContent-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const bnav = document.getElementById(`bnav-${t}`);
+
+        if (t === tabId) {
+          content.classList.remove('hidden');
+          // Update top inline tabs
+          btn.className = 'flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm';
+          // Update bottom nav
+          if (bnav) bnav.className = 'flex flex-col items-center justify-center py-1 text-brand-600 dark:text-brand-400 tap-highlight-transparent';
+        } else {
+          content.classList.add('hidden');
+          btn.className = 'flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+          if (bnav) bnav.className = 'flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 tap-highlight-transparent';
+        }
+      });
+
+      if (tabId === 'stats') {
+        renderViaChart();
+      }
+      lucide.createIcons();
+    }
+
+    // --- 4. FORMATTERS ---
+    function formatRupiah(num) {
+      if (isNaN(num)) return 'Rp 0';
+      return 'Rp ' + Number(num).toLocaleString('id-ID');
+    }
+
+    function formatDateIndo(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const parts = String(dateStr).split('T')[0].split('-');
+        if (parts.length === 3) {
+          const date = new Date(parts[0], parts[1] - 1, parts[2]);
+          return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        const d = new Date(dateStr);
+        if (!isNaN(d.getTime())) {
+          return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        return dateStr;
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    function getViaBadge(via) {
+      const v = String(via || '').toLowerCase();
+      if (v.includes('dana')) {
+        return `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800">DANA</span>`;
+      } else if (v.includes('cash') || v.includes('tunai')) {
+        return `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">CASH</span>`;
+      } else if (v.includes('bca')) {
+        return `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">BCA</span>`;
+      } else if (v.includes('bri')) {
+        return `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300 border border-orange-200 dark:border-orange-800">BRI</span>`;
+      }
+      return `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${via || 'Lainnya'}</span>`;
+    }
+
+    // --- 5. DATA FETCHING (GOOGLE VISUALIZATION API / APPS SCRIPT) ---
+    async function fetchData(showToast = false) {
+      const refreshIcon = document.getElementById('refreshIcon');
+      refreshIcon?.classList.add('animate-spin');
+      document.getElementById('lastUpdatedText').innerText = 'Memperbarui data...';
+      document.getElementById('errorBanner').classList.add('hidden');
+
+      try {
+        let fetchedRecords = [];
+
+        // Method 1: Google Sheet Visualization API (Direct Public Read)
+        const gvizUrl = `https://docs.google.com/spreadsheets/d/${appConfig.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(appConfig.sheetName || 'Kas')}`;
+        
+        const response = await fetch(gvizUrl);
+        const text = await response.text();
+        
+        // Parse GViz response: "/*O_o*/ google.visualization.Query.setResponse({...});"
+        const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);/);
+        
+        if (jsonMatch && jsonMatch[1]) {
+          const gvizData = JSON.parse(jsonMatch[1]);
+          if (gvizData.table && gvizData.table.rows) {
+            const rows = gvizData.table.rows;
+            fetchedRecords = rows.map((r, index) => {
+              const c = r.c || [];
+              const timestamp = c[0] ? (c[0].f || c[0].v) : '';
+              const dateVal = c[1] ? (c[1].f || c[1].v) : '';
+              const name = c[2] ? (c[2].v || c[2].f || '') : '';
+              const nominal = c[3] ? (Number(c[3].v) || 0) : 0;
+              const via = c[4] ? (c[4].v || c[4].f || '') : '';
+              const chatId = c[5] ? (c[5].v || '') : '';
+
+              return {
+                id: index + 1,
+                timestamp: timestamp,
+                date: String(dateVal),
+                name: String(name).trim(),
+                nominal: nominal,
+                via: String(via).trim(),
+                chatId: chatId
+              };
+            }).filter(item => item.name && item.nominal > 0);
+          }
+        }
+
+        // Check if records found
+        if (fetchedRecords.length > 0) {
+          rawData = fetchedRecords;
+        } else {
+          // If empty, let's keep sample or empty
+          rawData = [];
+        }
+
+        const now = new Date();
+        document.getElementById('lastUpdatedText').innerText = `Update: ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;
+        
+        renderAll();
+        if (showToast) showToastNotification('Data kas berhasil diperbarui! 🎉');
+      } catch (err) {
+        console.error('Fetch error:', err);
+        document.getElementById('errorBanner').classList.remove('hidden');
+        document.getElementById('errorMessage').innerText = 'Tidak dapat memuat data dari Google Sheet.';
+        document.getElementById('errorDetail').innerText = err.message + ' — Cek pengaturan Sheet ID atau gunakan data demo.';
+        
+        // Fallback demo data if never loaded
+        if (rawData.length === 0) {
+          useSampleData();
+        }
+      } finally {
+        refreshIcon?.classList.remove('animate-spin');
+        lucide.createIcons();
+      }
+    }
+
+    function useSampleData() {
+      rawData = [
+        { id: 1, date: '2026-08-20', name: 'Yusuf', nominal: 50000, via: 'Dana' },
+        { id: 2, date: '2026-08-20', name: 'Almer', nominal: 100000, via: 'BCA' },
+        { id: 3, date: '2026-08-19', name: 'Alifa', nominal: 25000, via: 'Cash' },
+        { id: 4, date: '2026-08-19', name: 'Nata', nominal: 50000, via: 'BRI' },
+        { id: 5, date: '2026-08-18', name: 'Ibnu', nominal: 50000, via: 'Dana' },
+        { id: 6, date: '2026-08-18', name: 'Taki', nominal: 25000, via: 'Cash' },
+        { id: 7, date: '2026-08-17', name: 'Rafasya', nominal: 50000, via: 'BCA' }
+      ];
+      document.getElementById('lastUpdatedText').innerText = 'Menampilkan data demo (offline)';
+      renderAll();
+    }
+
+    // --- 6. RENDER LOGIC ---
+    function renderAll() {
+      renderOverviewStats();
+      renderMembers();
+      renderHistory();
+      if (activeTab === 'stats') {
+        renderViaChart();
+      }
+      lucide.createIcons();
+    }
+
+    function renderOverviewStats() {
+      const totalNominal = rawData.reduce((acc, curr) => acc + (Number(curr.nominal) || 0), 0);
+      const totalCount = rawData.length;
+      const avg = totalCount > 0 ? Math.round(totalNominal / totalCount) : 0;
+
+      // Unique active members
+      const activeMemberNames = new Set(rawData.map(r => r.name.toLowerCase()));
+      const totalDefinedMembers = DEFAULT_MEMBERS.length;
+      const activeCount = DEFAULT_MEMBERS.filter(m => activeMemberNames.has(m.toLowerCase())).length;
+      const pct = Math.round((activeCount / totalDefinedMembers) * 100);
+
+      document.getElementById('statTotalNominal').innerText = formatRupiah(totalNominal);
+      document.getElementById('statTotalCount').innerText = totalCount + ' Transaksi';
+      document.getElementById('statAvgPerEntry').innerHTML = `<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Rata-rata: ${formatRupiah(avg)}/setor`;
+      document.getElementById('statActiveMembers').innerText = `${activeCount} / ${totalDefinedMembers}`;
+      document.getElementById('statMemberPct').innerText = `${pct}% anggota sudah setor`;
+
+      // Latest transaction
+      if (rawData.length > 0) {
+        const latest = rawData[rawData.length - 1]; // or first if reversed
+        document.getElementById('statLatestName').innerText = latest.name;
+        document.getElementById('statLatestDetail').innerText = `${formatRupiah(latest.nominal)} via ${latest.via} (${formatDateIndo(latest.date)})`;
+      } else {
+        document.getElementById('statLatestName').innerText = '-';
+        document.getElementById('statLatestDetail').innerText = 'Belum ada data';
+      }
+    }
+
+    function renderMembers() {
+      const search = (document.getElementById('searchMemberInput')?.value || '').toLowerCase();
+      const sort = document.getElementById('sortMemberSelect')?.value || 'nominal-desc';
+
+      // Group data by member
+      const memberMap = {};
+      DEFAULT_MEMBERS.forEach(m => {
+        memberMap[m] = {
+          name: m,
+          total: 0,
+          count: 0,
+          lastDate: '',
+          transactions: []
+        };
+      });
+
+      // Also include any unexpected names from Sheet
+      rawData.forEach(item => {
+        const key = item.name;
+        if (!memberMap[key]) {
+          memberMap[key] = {
+            name: key,
+            total: 0,
+            count: 0,
+            lastDate: '',
+            transactions: []
+          };
+        }
+        memberMap[key].total += Number(item.nominal) || 0;
+        memberMap[key].count += 1;
+        memberMap[key].lastDate = item.date;
+        memberMap[key].transactions.push(item);
+      });
+
+      let list = Object.values(memberMap);
+
+      // Search filter
+      if (search) {
+        list = list.filter(m => m.name.toLowerCase().includes(search));
+      }
+
+      // Sort
+      list.sort((a, b) => {
+        if (sort === 'nominal-desc') return b.total - a.total;
+        if (sort === 'nominal-asc') return a.total - b.total;
+        if (sort === 'name-asc') return a.name.localeCompare(b.name);
+        if (sort === 'latest') return (b.lastDate || '').localeCompare(a.lastDate || '');
+        return 0;
+      });
+
+      const container = document.getElementById('memberCardsGrid');
+      if (list.length === 0) {
+        container.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-slate-400">Tidak ada anggota yang cocok dengan pencarian.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(m => {
+        const isPaid = m.total > 0;
+        const avatarLetter = m.name.charAt(0).toUpperCase();
+
+        return `
+          <div onclick="openMemberModal('${m.name}')" class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:border-brand-500/50 hover:shadow-md transition cursor-pointer active:scale-[0.99] flex flex-col justify-between">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl ${isPaid ? 'bg-brand-50 text-brand-600 dark:bg-brand-950/70 dark:text-brand-300' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'} font-bold flex items-center justify-center text-base">
+                  ${avatarLetter}
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                    ${m.name}
+                    ${isPaid ? '<i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500"></i>' : ''}
+                  </h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                    ${m.count > 0 ? `${m.count}x setor • Terakhir: ${formatDateIndo(m.lastDate)}` : 'Belum pernah setor'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/70 flex items-center justify-between">
+              <span class="text-[11px] text-slate-400">Total Iuran:</span>
+              <span class="font-bold text-sm ${isPaid ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400 dark:text-slate-500'}">
+                ${formatRupiah(m.total)}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderHistory() {
+      const search = (document.getElementById('searchHistoryInput')?.value || '').toLowerCase();
+      const viaFilter = document.getElementById('filterViaSelect')?.value || '';
+
+      let list = [...rawData];
+
+      // Newest first
+      list.reverse();
+
+      if (search) {
+        list = list.filter(item => item.name.toLowerCase().includes(search));
+      }
+      if (viaFilter) {
+        list = list.filter(item => (item.via || '').toLowerCase() === viaFilter.toLowerCase());
+      }
+
+      document.getElementById('filteredCountText').innerText = `${list.length} transaksi`;
+      const container = document.getElementById('historyListContainer');
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-xs text-slate-400">Tidak ada riwayat transaksi yang sesuai.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        return `
+          <div class="p-3.5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center text-xs">
+                ${item.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-xs md:text-sm text-slate-800 dark:text-slate-100">${item.name}</h4>
+                  ${getViaBadge(item.via)}
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1">
+                  <i data-lucide="calendar" class="w-3 h-3"></i> ${formatDateIndo(item.date)}
+                </p>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <span class="font-bold text-xs md:text-sm text-emerald-600 dark:text-emerald-400">
+                +${formatRupiah(item.nominal)}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderViaChart() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const viaTotals = { 'Dana': 0, 'Cash': 0, 'BCA': 0, 'BRI': 0, 'Lainnya': 0 };
+
+      rawData.forEach(item => {
+        const v = String(item.via || '').trim();
+        if (viaTotals.hasOwnProperty(v)) {
+          viaTotals[v] += Number(item.nominal) || 0;
+        } else {
+          viaTotals['Lainnya'] += Number(item.nominal) || 0;
+        }
+      });
+
+      const labels = Object.keys(viaTotals).filter(k => viaTotals[k] > 0);
+      const dataValues = labels.map(k => viaTotals[k]);
+      const bgColors = [
+        '#38bdf8', // Dana (Sky)
+        '#10b981', // Cash (Emerald)
+        '#3b82f6', // BCA (Blue)
+        '#f97316', // BRI (Orange)
+        '#a855f7'  // Lainnya (Purple)
+      ];
+
+      const ctx = document.getElementById('viaChart');
+      if (!ctx) return;
+
+      if (viaChartInstance) {
+        viaChartInstance.destroy();
+      }
+
+      viaChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: dataValues,
+            backgroundColor: bgColors.slice(0, labels.length),
+            borderWidth: isDark ? 2 : 1,
+            borderColor: isDark ? '#0f172a' : '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          cutout: '68%'
+        }
+      });
+
+      // Render custom legend
+      const legendContainer = document.getElementById('viaLegendList');
+      if (legendContainer) {
+        legendContainer.innerHTML = labels.map((l, i) => `
+          <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800">
+            <div class="flex items-center gap-1.5 truncate">
+              <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${bgColors[i]}"></span>
+              <span class="font-semibold text-slate-700 dark:text-slate-300 truncate">${l}</span>
+            </div>
+            <span class="font-bold text-slate-900 dark:text-white shrink-0">${formatRupiah(viaTotals[l])}</span>
+          </div>
+        `).join('');
+      }
+
+      // Render Top 5 Contributors
+      const memberTotals = {};
+      rawData.forEach(item => {
+        memberTotals[item.name] = (memberTotals[item.name] || 0) + (Number(item.nominal) || 0);
+      });
+
+      const top5 = Object.entries(memberTotals)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      const top5Container = document.getElementById('topContributorsList');
+      if (top5Container) {
+        if (top5.length === 0) {
+          top5Container.innerHTML = `<p class="text-xs text-slate-400">Belum ada data kontribusi.</p>`;
+        } else {
+          top5Container.innerHTML = top5.map(([name, total], idx) => {
+            const badges = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+            return `
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">${badges[idx]}</span>
+                  <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${name}</span>
+                </div>
+                <span class="font-extrabold text-xs text-brand-600 dark:text-brand-400">${formatRupiah(total)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    }
+
+    // --- 7. MEMBER DETAIL MODAL ---
+    function openMemberModal(name) {
+      const memberItems = rawData.filter(r => r.name.toLowerCase() === name.toLowerCase());
+      const total = memberItems.reduce((acc, curr) => acc + (Number(curr.nominal) || 0), 0);
+
+      document.getElementById('modalMemberName').innerText = name;
+      document.getElementById('modalMemberAvatar').innerText = name.charAt(0).toUpperCase();
+      document.getElementById('modalMemberTotal').innerText = `Total Kas: ${formatRupiah(total)} (${memberItems.length}x setor)`;
+
+      const container = document.getElementById('modalMemberTransactions');
+      if (memberItems.length === 0) {
+        container.innerHTML = `
+          <div class="py-10 text-center text-slate-400 text-xs">
+            <i data-lucide="info" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+            <p>Belum ada catatan setoran untuk <strong>${name}</strong>.</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = memberItems.map((item, idx) => `
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Setoran #${idx + 1}</span>
+                ${getViaBadge(item.via)}
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
+                <i data-lucide="calendar" class="w-3 h-3"></i> Tanggal: ${formatDateIndo(item.date)}
+              </p>
+            </div>
+            <div class="text-right font-extrabold text-sm text-emerald-600 dark:text-emerald-400">
+              +${formatRupiah(item.nominal)}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('memberDetailModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeMemberModal() {
+      document.getElementById('memberDetailModal').classList.add('hidden');
+    }
+
+    // --- 8. CONFIG MODAL ---
+    function openConfigModal() {
+      document.getElementById('cfgSheetId').value = appConfig.sheetId || '';
+      document.getElementById('cfgSheetName').value = appConfig.sheetName || 'Kas';
+      document.getElementById('cfgWebAppUrl').value = appConfig.webAppUrl || '';
+      document.getElementById('configModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeConfigModal() {
+      document.getElementById('configModal').classList.add('hidden');
+    }
+
+    function saveConfigAndReload() {
+      const sheetId = document.getElementById('cfgSheetId').value.trim();
+      const sheetName = document.getElementById('cfgSheetName').value.trim() || 'Kas';
+      const webAppUrl = document.getElementById('cfgWebAppUrl').value.trim();
+
+      if (!sheetId) {
+        alert('Sheet ID tidak boleh kosong.');
+        return;
+      }
+
+      appConfig = { sheetId, sheetName, webAppUrl };
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(appConfig));
+      closeConfigModal();
+      fetchData(true);
+    }
+
+    // --- 9. SHARE TO WHATSAPP ---
+    function copyWhatsAppReport() {
+      const totalNominal = rawData.reduce((acc, curr) => acc + (Number(curr.nominal) || 0), 0);
+      const totalCount = rawData.length;
+      const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      // Group totals
+      const memberTotals = {};
+      DEFAULT_MEMBERS.forEach(m => memberTotals[m] = 0);
+      rawData.forEach(item => {
+        memberTotals[item.name] = (memberTotals[item.name] || 0) + (Number(item.nominal) || 0);
+      });
+
+      let text = `📊 *LAPORAN KAS BERSAMA*\n`;
+      text += `📅 Per: ${today}\n`;
+      text += `💰 *Total Kas Terkumpul: ${formatRupiah(totalNominal)}* (${totalCount} Transaksi)\n`;
+      text += `────────────────────\n`;
+      text += `*Rincian per Anggota:*\n`;
+
+      Object.entries(memberTotals).forEach(([name, tot], i) => {
+        const icon = tot > 0 ? '✅' : '⏳';
+        text += `${i + 1}. ${icon} ${name}: ${formatRupiah(tot)}\n`;
+      });
+
+      text += `────────────────────\n`;
+      text += `🌐 Cek dashboard live: ${window.location.href}`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToastNotification('Format laporan berhasil disalin! Tinggal paste di grup WA 📋');
+      }).catch(() => {
+        prompt('Salin teks laporan di bawah ini:', text);
+      });
+    }
+
+    function showToastNotification(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMessage');
+      if (toast && toastMsg) {
+        toastMsg.innerText = msg;
+        toast.classList.remove('hidden');
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 3500);
+      }
+    }
+
+    // --- 10. INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      lucide.createIcons();
+      fetchData();
+    });
+  </script>
+</body>
+</html>
