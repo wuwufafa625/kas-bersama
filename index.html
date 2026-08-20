@@ -90,6 +90,10 @@
 
       <!-- Action Buttons -->
       <div class="flex items-center space-x-2">
+        <button onclick="switchTab('payment')" class="px-2.5 py-1.5 rounded-lg bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/60 transition active:scale-95 flex items-center gap-1.5 text-xs font-bold border border-brand-200 dark:border-brand-800" title="Informasi Pembayaran Kas">
+          <i data-lucide="credit-card" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
+          <span class="hidden sm:inline">Cara Bayar</span>
+        </button>
         <button id="btnRefresh" onclick="fetchData(true)" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition active:scale-95" title="Refresh Data">
           <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i>
         </button>
@@ -183,18 +187,22 @@
     </section>
 
     <!-- ================= NAVIGATION TABS (DESKTOP / INLINE) ================= -->
-    <div class="flex items-center justify-between bg-slate-200/60 dark:bg-slate-900 p-1 rounded-xl text-xs font-semibold">
-      <button onclick="switchTab('members')" id="tabBtn-members" class="flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm">
+    <div class="flex items-center justify-between bg-slate-200/60 dark:bg-slate-900 p-1 rounded-xl text-xs font-semibold gap-1">
+      <button onclick="switchTab('members')" id="tabBtn-members" class="flex-1 py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm">
         <i data-lucide="users" class="w-4 h-4"></i>
-        <span>Per Anggota</span>
+        <span>Anggota</span>
       </button>
-      <button onclick="switchTab('history')" id="tabBtn-history" class="flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+      <button onclick="switchTab('history')" id="tabBtn-history" class="flex-1 py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
         <i data-lucide="list" class="w-4 h-4"></i>
-        <span>Riwayat Transaksi</span>
+        <span>Riwayat</span>
       </button>
-      <button onclick="switchTab('stats')" id="tabBtn-stats" class="flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+      <button onclick="switchTab('payment')" id="tabBtn-payment" class="flex-1 py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <i data-lucide="credit-card" class="w-4 h-4"></i>
+        <span>Cara Bayar</span>
+      </button>
+      <button onclick="switchTab('stats')" id="tabBtn-stats" class="flex-1 py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
         <i data-lucide="pie-chart" class="w-4 h-4"></i>
-        <span>Statistik & Metode</span>
+        <span>Statistik</span>
       </button>
     </div>
 
@@ -258,7 +266,120 @@
       </div>
     </section>
 
-    <!-- ================= TAB 3: STATISTIK & METODE ================= -->
+    <!-- ================= TAB 3: KARTU PEMBAYARAN KAS ONLINE ================= -->
+    <section id="tabContent-payment" class="space-y-4 hidden">
+      <!-- Main Payment Card Header -->
+      <div class="p-5 rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-brand-900 text-white shadow-xl border border-indigo-800/40 relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <i data-lucide="credit-card" class="w-40 h-40"></i>
+        </div>
+        <div class="relative z-10 space-y-2">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-brand-500/20 text-brand-300 border border-brand-400/30">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand-400"></i>
+            Metode Resmi Kas Online
+          </div>
+          <h2 class="text-xl md:text-2xl font-extrabold tracking-tight">KARTU PEMBAYARAN KAS ONLINE</h2>
+          <p class="text-xs md:text-sm text-slate-300 leading-relaxed max-w-xl">
+            Bagi Bapak/Ibu/Saudara/i yang ingin bertransaksi kas bersama, dapat melakukan transfer melalui rekening / e-wallet berikut:
+          </p>
+        </div>
+      </div>
+
+      <!-- 3 Rekening Channels Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        
+        <!-- 1. BANK BCA -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:border-blue-500/50 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                BANK BCA
+              </span>
+              <i data-lucide="building-2" class="w-4 h-4 text-blue-500"></i>
+            </div>
+            <div class="mt-3">
+              <p class="text-[11px] text-slate-400 uppercase font-medium tracking-wider">Nomor Rekening</p>
+              <div class="mt-1 flex items-center justify-between bg-slate-50 dark:bg-slate-800/70 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                <code class="font-mono text-base md:text-lg font-extrabold tracking-wider text-slate-800 dark:text-slate-100 select-all">0182280877</code>
+              </div>
+            </div>
+          </div>
+          <button onclick="copyToClipboard('0182280877', 'Nomor rekening BCA (0182280877) berhasil disalin! 📋')" class="w-full py-2 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-xs font-bold transition flex items-center justify-center gap-1.5 active:scale-95">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Salin No. Rekening</span>
+          </button>
+        </div>
+
+        <!-- 2. DANA -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:border-sky-500/50 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                DANA
+              </span>
+              <i data-lucide="smartphone" class="w-4 h-4 text-sky-500"></i>
+            </div>
+            <div class="mt-3">
+              <p class="text-[11px] text-slate-400 uppercase font-medium tracking-wider">Nomor Akun / E-Wallet</p>
+              <div class="mt-1 flex items-center justify-between bg-slate-50 dark:bg-slate-800/70 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                <code class="font-mono text-base md:text-lg font-extrabold tracking-wider text-slate-800 dark:text-slate-100 select-all">085895633784</code>
+              </div>
+            </div>
+          </div>
+          <button onclick="copyToClipboard('085895633784', 'Nomor DANA (085895633784) berhasil disalin! 📋')" class="w-full py-2 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/60 dark:hover:bg-sky-900/60 text-sky-700 dark:text-sky-300 text-xs font-bold transition flex items-center justify-center gap-1.5 active:scale-95">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Salin Nomor DANA</span>
+          </button>
+        </div>
+
+        <!-- 3. BANK BRI -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:border-orange-500/50 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 border border-orange-200 dark:border-orange-800">
+                BANK BRI
+              </span>
+              <i data-lucide="landmark" class="w-4 h-4 text-orange-500"></i>
+            </div>
+            <div class="mt-3">
+              <p class="text-[11px] text-slate-400 uppercase font-medium tracking-wider">Nomor Rekening</p>
+              <div class="mt-1 flex items-center justify-between bg-slate-50 dark:bg-slate-800/70 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                <code class="font-mono text-sm md:text-base font-extrabold tracking-wider text-slate-800 dark:text-slate-100 select-all">5928 0104 3155 530</code>
+              </div>
+            </div>
+          </div>
+          <button onclick="copyToClipboard('592801043155530', 'Nomor rekening BRI (592801043155530) berhasil disalin! 📋')" class="w-full py-2 px-3 rounded-xl bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/60 dark:hover:bg-orange-900/60 text-orange-700 dark:text-orange-300 text-xs font-bold transition flex items-center justify-center gap-1.5 active:scale-95">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Salin No. Rekening</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Confirmation Notice & WhatsApp Direct Button -->
+      <div class="p-4 md:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="p-2.5 rounded-xl bg-emerald-500 text-white shrink-0 shadow-sm">
+            <i data-lucide="message-circle" class="w-5 h-5"></i>
+          </div>
+          <div class="space-y-1 text-xs md:text-sm text-emerald-950 dark:text-emerald-100">
+            <p class="font-extrabold flex items-center gap-1">
+              📌 📲 Mohon konfirmasi setelah transfer ke nomor:
+              <span class="underline font-mono font-bold">085895633784</span>
+            </p>
+            <p class="text-emerald-700 dark:text-emerald-300 text-xs">
+              Terimakasih banyak atas partisipasi dan kerjasamanya 🙏🏻🙏🏻🙏🏻
+            </p>
+          </div>
+        </div>
+        <a href="https://wa.me/6285895633784?text=Halo%20Admin%2C%20saya%20sudah%20transfer%20kas%20atas%20nama%20...%20sebesar%20Rp%20..." target="_blank" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 active:scale-95 transition shrink-0">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Konfirmasi via WhatsApp</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: STATISTIK & METODE ================= -->
     <section id="tabContent-stats" class="space-y-4 hidden">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Breakdown Metode Pembayaran -->
@@ -297,7 +418,7 @@
 
   <!-- ================= BOTTOM NAVIGATION BAR (MOBILE ONLY) ================= -->
   <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 md:hidden safe-bottom">
-    <div class="grid grid-cols-3 py-1.5 text-[11px] font-semibold text-center">
+    <div class="grid grid-cols-4 py-1.5 text-[11px] font-semibold text-center">
       <button onclick="switchTab('members')" id="bnav-members" class="flex flex-col items-center justify-center py-1 text-brand-600 dark:text-brand-400 tap-highlight-transparent">
         <i data-lucide="users" class="w-5 h-5 mb-0.5"></i>
         <span>Anggota</span>
@@ -305,6 +426,10 @@
       <button onclick="switchTab('history')" id="bnav-history" class="flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 tap-highlight-transparent">
         <i data-lucide="receipt" class="w-5 h-5 mb-0.5"></i>
         <span>Riwayat</span>
+      </button>
+      <button onclick="switchTab('payment')" id="bnav-payment" class="flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 tap-highlight-transparent">
+        <i data-lucide="credit-card" class="w-5 h-5 mb-0.5"></i>
+        <span>Bayar</span>
       </button>
       <button onclick="switchTab('stats')" id="bnav-stats" class="flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 tap-highlight-transparent">
         <i data-lucide="pie-chart" class="w-5 h-5 mb-0.5"></i>
@@ -401,20 +526,20 @@
     // --- 3. TAB SWITCHING ---
     function switchTab(tabId) {
       activeTab = tabId;
-      ['members', 'history', 'stats'].forEach(t => {
+      ['members', 'history', 'payment', 'stats'].forEach(t => {
         const content = document.getElementById(`tabContent-${t}`);
         const btn = document.getElementById(`tabBtn-${t}`);
         const bnav = document.getElementById(`bnav-${t}`);
 
         if (t === tabId) {
-          content.classList.remove('hidden');
+          if (content) content.classList.remove('hidden');
           // Update top inline tabs
-          btn.className = 'flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm';
+          if (btn) btn.className = 'flex-1 py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm';
           // Update bottom nav
           if (bnav) bnav.className = 'flex flex-col items-center justify-center py-1 text-brand-600 dark:text-brand-400 tap-highlight-transparent';
         } else {
-          content.classList.add('hidden');
-          btn.className = 'flex-1 py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+          if (content) content.classList.add('hidden');
+          if (btn) btn.className = 'flex-1 py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
           if (bnav) bnav.className = 'flex flex-col items-center justify-center py-1 text-slate-500 dark:text-slate-400 tap-highlight-transparent';
         }
       });
@@ -423,6 +548,18 @@
         renderViaChart();
       }
       lucide.createIcons();
+    }
+
+    function copyToClipboard(text, message) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToastNotification(message || 'Nomor berhasil disalin! 📋');
+        }).catch(() => {
+          prompt('Salin nomor berikut:', text);
+        });
+      } else {
+        prompt('Salin nomor berikut:', text);
+      }
     }
 
     // --- 4. FORMATTERS ---
