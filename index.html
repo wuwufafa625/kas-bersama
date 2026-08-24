@@ -113,10 +113,6 @@
           <span class="hidden md:inline">Share WA</span>
         </button>
 
-        <button onclick="openConfigModal()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition active:scale-95" title="Pengaturan Sheet / API">
-          <i data-lucide="settings" class="w-4 h-4"></i>
-        </button>
-
         <button id="btnThemeToggle" onclick="toggleDarkMode()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition active:scale-95" title="Ganti Tema">
           <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
           <i data-lucide="sun" class="w-4 h-4 block dark:hidden"></i>
@@ -135,7 +131,6 @@
           Supaya data kas dan pengeluaran bisa dibaca oleh dashboard web, pastikan Google Sheet disetel <strong>Siapa saja yang memiliki link (Viewer)</strong> atau gunakan Web App URL.
         </p>
         <div class="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-amber-200/60 dark:border-amber-800/60 flex flex-wrap gap-2 items-center text-[11px]">
-          <button onclick="openConfigModal()" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold transition">Buka Pengaturan Sumber Data</button>
           <button onclick="useSampleData()" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-medium transition">Tampilkan Data Demo</button>
         </div>
       </div>
@@ -462,43 +457,6 @@
       </div>
     </div>
   </div>
-
-  <div id="configModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3.5 md:p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
-      <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-        <h3 class="font-bold text-sm flex items-center gap-2">
-          <i data-lucide="settings" class="w-4 h-4 text-brand-500"></i>
-          Pengaturan Sumber Data
-        </h3>
-        <button onclick="closeConfigModal()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-      <div class="p-4 space-y-3.5 text-xs overflow-y-auto">
-        <div>
-          <label class="font-semibold block mb-1">Google Sheet ID:</label>
-          <input type="text" id="cfgSheetId" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-mono" placeholder="112HDYnXS-xrabvV30f9LP7UeBaCXCbJVRwZEDBvPJvo" />
-          <p class="text-[10px] text-slate-400 mt-1">ID spreadsheet dari URL Google Sheet Anda.</p>
-        </div>
-        <div>
-          <label class="font-semibold block mb-1">Nama Tab Iuran (Kas Masuk):</label>
-          <input type="text" id="cfgSheetName" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs" placeholder="Kas" />
-        </div>
-        <div>
-          <label class="font-semibold block mb-1">Nama Tab Pengeluaran (Kas Keluar):</label>
-          <input type="text" id="cfgExpSheetName" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs" placeholder="Pengeluaran" />
-        </div>
-        <div>
-          <label class="font-semibold block mb-1">Web App URL Google Apps Script (Opsional / Recommended):</label>
-          <input type="url" id="cfgWebAppUrl" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-mono" placeholder="https://script.google.com/macros/s/.../exec" />
-          <p class="text-[10px] text-slate-400 mt-1">Jika diisi, web akan langsung memuat data JSON lengkap dari Apps Script.</p>
-        </div>
-        <div class="pt-2 flex gap-2">
-          <button onclick="saveConfig()" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition">Simpan Pengaturan</button>
-          <button onclick="useSampleData(); closeConfigModal();" class="py-2.5 px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-semibold transition">Pakai Data Demo</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div id="toast" class="hidden fixed top-5 right-5 z-50 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-xl text-xs font-semibold flex items-center gap-2 transition-all">
@@ -1234,30 +1192,6 @@
       });
     }
 
-    function openConfigModal() {
-      document.getElementById('cfgSheetId').value = appConfig.sheetId || '';
-      document.getElementById('cfgSheetName').value = appConfig.sheetName || 'Kas';
-      document.getElementById('cfgExpSheetName').value = appConfig.expSheetName || 'Pengeluaran';
-      document.getElementById('cfgWebAppUrl').value = appConfig.webAppUrl || '';
-      document.getElementById('configModal').classList.remove('hidden');
-    }
-
-    function closeConfigModal() {
-      document.getElementById('configModal').classList.add('hidden');
-    }
-
-    function saveConfig() {
-      appConfig.sheetId = document.getElementById('cfgSheetId').value.trim();
-      appConfig.sheetName = document.getElementById('cfgSheetName').value.trim() || 'Kas';
-      appConfig.expSheetName = document.getElementById('cfgExpSheetName').value.trim() || 'Pengeluaran';
-      appConfig.webAppUrl = document.getElementById('cfgWebAppUrl').value.trim();
-
-      localStorage.setItem(CONFIG_KEY, JSON.stringify(appConfig));
-      closeConfigModal();
-      showToastNotification('Pengaturan berhasil disimpan!');
-      fetchData(true);
-    }
-
     function copyToClipboard(text, msg) {
       navigator.clipboard.writeText(text).then(() => {
         showToastNotification(msg || 'Berhasil disalin! 📋');
@@ -1282,4 +1216,3 @@
   </script>
 </body>
 </html>
-
