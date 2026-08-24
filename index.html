@@ -5,13 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Laporan Kas Bersama - Transparansi Kas Multi-Tahun</title>
   <meta name="description" content="Dashboard laporan transparansi kas bersama, pencatatan iuran multi-bulan/tahun, pengeluaran, dan kalkulasi sisa saldo." />
-  
-  <!-- Fonts -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  
-  <!-- Tailwind CSS CDN -->
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -40,7 +38,6 @@
     }
   </script>
 
-  <!-- Lucide Icons & Chart.js -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -71,11 +68,9 @@
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased min-h-full flex flex-col pb-24 md:pb-8 transition-colors duration-200">
 
-  <!-- ================= TOP HEADER ================= -->
   <header class="sticky top-0 z-30 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-3 md:px-4 py-2.5 transition-colors">
     <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
-      
-      <!-- Brand & Title -->
+
       <div class="flex items-center space-x-2.5">
         <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20 shrink-0">
           <i data-lucide="wallet" class="w-5 h-5"></i>
@@ -94,12 +89,11 @@
         </div>
       </div>
 
-      <!-- Year Selector & Action Controls -->
       <div class="flex items-center space-x-1.5 md:space-x-2">
-        <!-- Multi-Year Dropdown -->
+
         <div class="relative flex items-center">
           <select id="globalYearSelect" onchange="onYearChange(this.value)" class="text-xs font-bold py-1.5 pl-2.5 pr-7 rounded-xl bg-brand-50 dark:bg-brand-950/70 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer transition appearance-none">
-            <!-- Dynamically populated -->
+
             <option value="all">Semua Tahun</option>
             <option value="2026" selected>Tahun 2026</option>
           </select>
@@ -132,10 +126,8 @@
     </div>
   </header>
 
-  <!-- ================= MAIN CONTAINER ================= -->
   <main class="flex-1 max-w-6xl w-full mx-auto px-3.5 md:px-4 py-4 md:py-6 space-y-4 md:space-y-6">
 
-    <!-- Notice Banner for Private/Error Sheet -->
     <div id="errorBanner" class="hidden p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-900 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-3 shadow-sm">
       <i data-lucide="alert-circle" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5"></i>
       <div class="flex-1 space-y-1.5">
@@ -150,10 +142,8 @@
       </div>
     </div>
 
-    <!-- ================= 4 KEY OVERVIEW STAT CARDS ================= -->
     <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-      
-      <!-- 1. Sisa Saldo Kas Bersih (Card Utama) -->
+
       <div class="col-span-2 sm:col-span-1 p-4 md:p-5 rounded-2xl bg-gradient-to-br from-brand-600 via-indigo-600 to-indigo-800 text-white shadow-lg shadow-brand-600/20 relative overflow-hidden flex flex-col justify-between">
         <div class="absolute -right-3 -bottom-3 opacity-10 pointer-events-none">
           <i data-lucide="sparkles" class="w-28 h-28"></i>
@@ -172,7 +162,6 @@
         </p>
       </div>
 
-      <!-- 2. Total Kas Masuk (Iuran) -->
       <div class="p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
         <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
           <span class="text-xs font-semibold uppercase tracking-wider">Kas Masuk</span>
@@ -186,7 +175,6 @@
         </div>
       </div>
 
-      <!-- 3. Total Pengeluaran -->
       <div class="p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
         <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
           <span class="text-xs font-semibold uppercase tracking-wider">Pengeluaran</span>
@@ -200,7 +188,6 @@
         </div>
       </div>
 
-      <!-- 4. Partisipasi Anggota -->
       <div class="col-span-2 sm:col-span-1 p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
         <div class="flex items-center justify-between text-slate-500 dark:text-slate-400">
           <span class="text-xs font-semibold uppercase tracking-wider">Kontributor</span>
@@ -215,7 +202,6 @@
       </div>
     </section>
 
-    <!-- ================= NAVIGATION TABS (DESKTOP / INLINE) ================= -->
     <div class="flex items-center justify-between bg-slate-200/70 dark:bg-slate-900 p-1 rounded-2xl text-xs font-bold gap-1 overflow-x-auto">
       <button onclick="switchTab('matrix')" id="tabBtn-matrix" class="flex-1 min-w-[100px] py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm">
         <i data-lucide="grid" class="w-4 h-4"></i>
@@ -243,7 +229,6 @@
       </button>
     </div>
 
-    <!-- ================= TAB 1: MATRIKS IURAN BULANAN ================= -->
     <section id="tabContent-matrix" class="space-y-4">
       <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -260,7 +245,6 @@
           </div>
         </div>
 
-        <!-- Matrix Responsive Table -->
         <div class="overflow-x-auto rounded-xl border border-slate-200/70 dark:border-slate-800/70">
           <table class="w-full text-xs text-left border-collapse min-w-[700px]">
             <thead>
@@ -282,25 +266,24 @@
               </tr>
             </thead>
             <tbody id="matrixTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-              <!-- Dynamically populated -->
+
             </tbody>
             <tfoot id="matrixTableFoot" class="bg-brand-50/70 dark:bg-slate-800/90 font-bold border-t-2 border-brand-200 dark:border-brand-900">
-              <!-- Total per month populated dynamically -->
+
             </tfoot>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- ================= TAB 2: KARTU PER ANGGOTA ================= -->
     <section id="tabContent-members" class="hidden space-y-4">
       <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
-        <!-- Search bar -->
+
         <div class="relative flex-1">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
           <input type="text" id="searchMemberInput" oninput="renderMembers()" placeholder="Cari nama anggota..." class="w-full pl-9 pr-4 py-2 text-xs md:text-sm rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" />
         </div>
-        <!-- Sort Dropdown -->
+
         <div class="flex items-center gap-2">
           <select id="sortMemberSelect" onchange="renderMembers()" class="text-xs py-2 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
             <option value="nominal-desc">Iuran Terbanyak ??</option>
@@ -311,21 +294,19 @@
         </div>
       </div>
 
-      <!-- Member Cards Grid -->
       <div id="memberCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-        <!-- Populated via JS -->
+
       </div>
     </section>
 
-    <!-- ================= TAB 3: PENGELUARAN (KAS KELUAR) ================= -->
     <section id="tabContent-expenses" class="hidden space-y-4">
       <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
-        <!-- Search bar -->
+
         <div class="relative flex-1">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
           <input type="text" id="searchExpenseInput" oninput="renderExpenses()" placeholder="Cari keperluan / keterangan belanja..." class="w-full pl-9 pr-4 py-2 text-xs md:text-sm rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 transition" />
         </div>
-        <!-- Filter Via -->
+
         <div class="flex items-center gap-2">
           <select id="filterExpenseVia" onchange="renderExpenses()" class="text-xs py-2 px-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
             <option value="">Semua Sumber Dana</option>
@@ -337,7 +318,6 @@
         </div>
       </div>
 
-      <!-- Expenses Summary Box -->
       <div class="p-4 rounded-2xl bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center font-bold">
@@ -353,16 +333,14 @@
         </div>
       </div>
 
-      <!-- Expenses List Container -->
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800" id="expenseListContainer">
-        <!-- Populated via JS -->
+
       </div>
     </section>
 
-    <!-- ================= TAB 4: RIWAYAT TRANSAKSI (SEMUA) ================= -->
     <section id="tabContent-history" class="hidden space-y-4">
       <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
-        <!-- Type Filter & Search -->
+
         <div class="flex items-center gap-2 flex-1">
           <div class="relative flex-1">
             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -392,16 +370,14 @@
       </div>
 
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800" id="historyListContainer">
-        <!-- Populated via JS -->
+
       </div>
     </section>
 
-    <!-- ================= TAB 5: STATISTIK & REKAP ================= -->
     <section id="tabContent-stats" class="hidden space-y-5">
-      
-      <!-- Charts Row -->
+
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <!-- Monthly Inflow vs Outflow Bar Chart -->
+
         <div class="lg:col-span-2 p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
             <div>
@@ -417,7 +393,6 @@
           </div>
         </div>
 
-        <!-- Doughnut Payment Channel -->
         <div class="p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3 flex flex-col justify-between">
           <div>
             <h3 class="font-bold text-xs md:text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
@@ -430,15 +405,13 @@
             <canvas id="viaChart"></canvas>
           </div>
           <div id="viaLegendList" class="space-y-1.5 text-xs">
-            <!-- Populated via JS -->
+
           </div>
         </div>
       </div>
 
-      <!-- Monthly Summary Table & Top Contributors -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        
-        <!-- Table Rekap Bulanan -->
+
         <div class="lg:col-span-2 p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
           <h3 class="font-bold text-xs md:text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <i data-lucide="table" class="w-4 h-4 text-blue-500"></i>
@@ -455,26 +428,24 @@
                 </tr>
               </thead>
               <tbody id="monthlySummaryTableBody" class="divide-y divide-slate-100 dark:divide-slate-800">
-                <!-- Dynamically populated -->
+
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Top Kontributor -->
         <div class="p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
           <h3 class="font-bold text-xs md:text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i>
             Top Kontributor Iuran
           </h3>
           <div id="topMembersList" class="space-y-2">
-            <!-- Populated via JS -->
+
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= TAB 6: CARA BAYAR ================= -->
     <section id="tabContent-payment" class="hidden space-y-4">
       <div class="p-4 md:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
         <div class="flex items-center gap-3">
@@ -489,7 +460,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        <!-- 1. BANK BCA -->
+
         <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:border-blue-500/50 hover:shadow-md transition flex flex-col justify-between space-y-4">
           <div>
             <div class="flex items-center justify-between">
@@ -511,7 +482,6 @@
           </button>
         </div>
 
-        <!-- 2. DANA -->
         <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:border-sky-500/50 hover:shadow-md transition flex flex-col justify-between space-y-4">
           <div>
             <div class="flex items-center justify-between">
@@ -533,7 +503,6 @@
           </button>
         </div>
 
-        <!-- 3. BANK BRI -->
         <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:border-orange-500/50 hover:shadow-md transition flex flex-col justify-between space-y-4">
           <div>
             <div class="flex items-center justify-between">
@@ -556,7 +525,6 @@
         </div>
       </div>
 
-      <!-- WA Confirmation Banner -->
       <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-3">
         <div class="flex items-center gap-3 text-center sm:text-left">
           <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
@@ -576,7 +544,6 @@
 
   </main>
 
-  <!-- ================= MOBILE BOTTOM NAVIGATION ================= -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200/80 dark:border-slate-800/80 px-2 py-1.5 safe-bottom flex items-center justify-around text-[10px] font-bold">
     <button onclick="switchTab('matrix')" id="navBtn-matrix" class="flex flex-col items-center gap-0.5 p-1 rounded-xl text-brand-600 dark:text-brand-400">
       <i data-lucide="grid" class="w-5 h-5"></i>
@@ -604,10 +571,9 @@
     </button>
   </nav>
 
-  <!-- ================= MEMBER DETAIL MODAL ================= -->
   <div id="memberDetailModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3.5 md:p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[85vh] animate-in fade-in zoom-in duration-150">
-      <!-- Modal Header -->
+
       <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div id="modalMemberAvatar" class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-950/80 dark:text-brand-300 font-bold flex items-center justify-center text-lg">
@@ -623,28 +589,26 @@
         </button>
       </div>
 
-      <!-- Modal Body -->
       <div class="p-4 overflow-y-auto space-y-3.5 flex-1 text-xs">
-        <!-- Monthly Paid Badges for Selected Year -->
+
         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1.5">
           <p class="font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
             <span>Status Iuran Tahun <span id="modalYearTitle">2026</span>:</span>
             <span id="modalYearProgress" class="text-brand-600 dark:text-brand-400 font-extrabold">0/12 Bulan</span>
           </p>
           <div id="modalMonthsBadges" class="flex flex-wrap gap-1 pt-1">
-            <!-- Populated via JS -->
+
           </div>
         </div>
 
         <p class="font-bold text-slate-500 uppercase tracking-wider text-[11px] pt-1">Riwayat Transaksi Iuran</p>
         <div id="modalMemberTransactions" class="space-y-2">
-          <!-- Populated via JS -->
+
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ================= CONFIGURATION MODAL ================= -->
   <div id="configModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3.5 md:p-4">
     <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
       <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
@@ -683,15 +647,13 @@
     </div>
   </div>
 
-  <!-- ================= TOAST NOTIFICATION ================= -->
   <div id="toast" class="hidden fixed top-5 right-5 z-50 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-xl text-xs font-semibold flex items-center gap-2 transition-all">
     <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 dark:text-emerald-600"></i>
     <span id="toastMessage">Pesan</span>
   </div>
 
-  <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
-    // --- 1. CONFIGURATION & STATE ---
+
     const DEFAULT_MEMBERS = [
       "Yusuf", "Almer", "Alifa", "Nata", "Ibnu",
       "Taki", "Rafasya", "Abbas", "Fathan", "Dijah",
@@ -709,23 +671,22 @@
       "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
     ];
 
-    const CONFIG_KEY = 'kas_multi_year_config_v2';
+    const CONFIG_KEY = 'kas_multi_year_config_v3';
     let appConfig = {
       sheetId: '112HDYnXS-xrabvV30f9LP7UeBaCXCbJVRwZEDBvPJvo',
       sheetName: 'Kas',
       expSheetName: 'Pengeluaran',
-      webAppUrl: ''
+      webAppUrl: 'https://script.google.com/macros/s/AKfycbzdkvB9YTLHpUZEhfB3PpnpyW27LY7EbmHGvcDgZX2zzJ38gE8rAgR27G56Rvg4-FOcaA/exec'
     };
 
     let rawIncomes = [];
     let rawExpenses = [];
     let availableYears = [2024, 2025, 2026, 2027];
-    let selectedYear = new Date().getFullYear().toString(); // 'all' or '2026'
+    let selectedYear = new Date().getFullYear().toString();
     let activeTab = 'matrix';
     let monthlyChartInstance = null;
     let viaChartInstance = null;
 
-    // Load saved config
     try {
       const saved = localStorage.getItem(CONFIG_KEY);
       if (saved) {
@@ -735,7 +696,6 @@
       console.warn('Could not read config:', e);
     }
 
-    // --- 2. THEME HANDLING ---
     function initTheme() {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -753,7 +713,6 @@
       }
     }
 
-    // --- 3. FORMAT HELPERS ---
     function formatRupiah(num) {
       const val = Number(num) || 0;
       return 'Rp ' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -786,7 +745,6 @@
       return `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">${via || 'Lainnya'}</span>`;
     }
 
-    // --- 4. DATA FETCHING (WEB APP URL & GVIZ PUBLIC FALLBACK) ---
     async function fetchData(showToast = false) {
       const refreshIcon = document.getElementById('refreshIcon');
       refreshIcon?.classList.add('animate-spin');
@@ -797,7 +755,6 @@
         let loadedIncomes = [];
         let loadedExpenses = [];
 
-        // Method A: Direct Web App URL (doGet)
         if (appConfig.webAppUrl && appConfig.webAppUrl.startsWith('http')) {
           try {
             const resp = await fetch(appConfig.webAppUrl);
@@ -814,9 +771,8 @@
           }
         }
 
-        // Method B: Google Sheets Visualization API (GViz)
         if (loadedIncomes.length === 0 && loadedExpenses.length === 0) {
-          // 1. Fetch Incomes
+
           const gvizKasUrl = `https://docs.google.com/spreadsheets/d/${appConfig.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(appConfig.sheetName || 'Kas')}`;
           const resKas = await fetch(gvizKasUrl);
           const txtKas = await resKas.text();
@@ -859,7 +815,6 @@
             }
           }
 
-          // 2. Fetch Expenses (Pengeluaran)
           try {
             const gvizExpUrl = `https://docs.google.com/spreadsheets/d/${appConfig.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(appConfig.expSheetName || 'Pengeluaran')}`;
             const resExp = await fetch(gvizExpUrl);
@@ -983,7 +938,6 @@
       renderAll();
     }
 
-    // --- 5. RENDER ALL COMPONENTS ---
     function renderAll() {
       renderOverviewStats();
       renderMatrixTable();
@@ -1028,7 +982,6 @@
       document.getElementById('selectedYearBadge').innerText = (selectedYear === 'all') ? 'Semua' : selectedYear;
       document.getElementById('statSaldoNote').innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 shrink-0"></i> Bersih: Masuk ${formatRupiah(totalPemasukan)} - Keluar ${formatRupiah(totalPengeluaran)}`;
 
-      // Active members in current scope
       const activeMemberNames = new Set(filteredInc.map(r => r.name.toLowerCase()));
       const totalDefined = DEFAULT_MEMBERS.length;
       const activeCount = DEFAULT_MEMBERS.filter(m => activeMemberNames.has(m.toLowerCase())).length;
@@ -1038,19 +991,17 @@
       document.getElementById('statMemberPct').innerText = `${pct}% anggota sudah menyetor`;
     }
 
-    // --- 6. RENDER MATRIKS IURAN BULANAN ---
     function renderMatrixTable() {
       const displayYear = (selectedYear === 'all') ? new Date().getFullYear().toString() : selectedYear;
       document.getElementById('matrixYearTitle').innerText = displayYear;
 
-      // Group payments by member and by month
       const memberMonthMap = {};
       const monthlyTotals = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       DEFAULT_MEMBERS.forEach(name => {
         memberMonthMap[name] = {
           name: name,
-          months: {}, // '01': { paid: true, nominal, date }
+          months: {},
           totalYear: 0
         };
       });
@@ -1063,15 +1014,15 @@
 
         const months = item.months || [];
         months.forEach(mTag => {
-          // mTag: "2026-08"
+
           const parts = mTag.split('-');
           if (parts[0] === displayYear) {
             const mIdx = parseInt(parts[1], 10) - 1;
             if (mIdx >= 0 && mIdx < 12) {
               const monthKey = parts[1];
-              // divide nominal equally if multiple months or full amount
+
               const portionNominal = months.length > 0 ? Math.round(item.nominal / months.length) : item.nominal;
-              
+
               memberMonthMap[name].months[monthKey] = {
                 paid: true,
                 nominal: portionNominal,
@@ -1129,7 +1080,6 @@
         `;
       }).join('');
 
-      // Foot: Total per month
       const totalYearAll = monthlyTotals.reduce((a, b) => a + b, 0);
       tfoot.innerHTML = `
         <tr>
@@ -1148,7 +1098,6 @@
       `;
     }
 
-    // --- 7. RENDER MEMBERS CARDS ---
     function renderMembers() {
       const search = (document.getElementById('searchMemberInput')?.value || '').toLowerCase();
       const sort = document.getElementById('sortMemberSelect')?.value || 'nominal-desc';
@@ -1180,7 +1129,7 @@
         }
 
         const matchesScope = (selectedYear === 'all') || (item.date && item.date.startsWith(selectedYear + '-')) || (item.months && item.months.some(m => m.startsWith(selectedYear + '-')));
-        
+
         if (matchesScope) {
           memberMap[key].total += Number(item.nominal) || 0;
           memberMap[key].count += 1;
@@ -1218,7 +1167,6 @@
         const isPaid = m.total > 0;
         const avatarLetter = m.name.charAt(0).toUpperCase();
 
-        // Format paid month badges
         const yearMonths = m.paidMonths.filter(mTag => selectedYear === 'all' || mTag.startsWith(displayYear + '-')).sort();
         const badgesHtml = yearMonths.length > 0 ? yearMonths.map(mTag => {
           const parts = mTag.split('-');
@@ -1245,7 +1193,6 @@
               </div>
             </div>
 
-            <!-- Paid Months Tags -->
             <div class="pt-2 border-t border-slate-100 dark:border-slate-800/70">
               <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Bulan Terbayar:</p>
               <div class="flex flex-wrap gap-1">
@@ -1264,7 +1211,6 @@
       }).join('');
     }
 
-    // --- 8. RENDER EXPENSES (PENGELUARAN) ---
     function renderExpenses() {
       const search = (document.getElementById('searchExpenseInput')?.value || '').toLowerCase();
       const viaFilter = document.getElementById('filterExpenseVia')?.value || '';
@@ -1315,7 +1261,6 @@
       }).join('');
     }
 
-    // --- 9. RENDER HISTORY (SEMUA TRANSAKSI) ---
     function renderHistory() {
       const search = (document.getElementById('searchHistoryInput')?.value || '').toLowerCase();
       const typeFilter = document.getElementById('filterHistoryType')?.value || 'all';
@@ -1383,13 +1328,11 @@
       }).join('');
     }
 
-    // --- 10. RENDER CHARTS & STATS ---
     function renderCharts() {
       const isDark = document.documentElement.classList.contains('dark');
       const displayYear = (selectedYear === 'all') ? new Date().getFullYear().toString() : selectedYear;
       document.getElementById('statsYearTitle').innerText = displayYear;
 
-      // 1. Monthly Inflow & Outflow calculation
       const monthlyInc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       const monthlyExp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -1416,7 +1359,6 @@
         }
       });
 
-      // Render Bar Chart
       const barCtx = document.getElementById('monthlyChart');
       if (barCtx) {
         if (monthlyChartInstance) monthlyChartInstance.destroy();
@@ -1464,7 +1406,6 @@
         });
       }
 
-      // Render Via Doughnut Chart
       const viaTotals = { 'Dana': 0, 'Cash': 0, 'BCA': 0, 'BRI': 0, 'Lainnya': 0 };
       const filteredInc = getFilteredIncomes();
       filteredInc.forEach(item => {
@@ -1516,7 +1457,6 @@
         }
       }
 
-      // Render Monthly Summary Table
       const summaryTableBody = document.getElementById('monthlySummaryTableBody');
       if (summaryTableBody) {
         summaryTableBody.innerHTML = MONTH_NAMES.map((mName, idx) => {
@@ -1534,7 +1474,6 @@
         }).join('');
       }
 
-      // Render Top Contributors
       const topCont = document.getElementById('topMembersList');
       if (topCont) {
         const memberTotals = {};
@@ -1558,7 +1497,6 @@
       }
     }
 
-    // --- 11. MEMBER DETAIL MODAL ---
     function openMemberModal(name) {
       const displayYear = (selectedYear === 'all') ? new Date().getFullYear().toString() : selectedYear;
       document.getElementById('modalYearTitle').innerText = displayYear;
@@ -1569,7 +1507,6 @@
       const totalAll = memberItems.reduce((acc, curr) => acc + (Number(curr.nominal) || 0), 0);
       document.getElementById('modalMemberTotal').innerText = `Total Iuran Disetor: ${formatRupiah(totalAll)}`;
 
-      // Calculate paid months for displayYear
       const paidInYear = new Set();
       memberItems.forEach(item => {
         (item.months || []).forEach(mTag => {
@@ -1581,7 +1518,6 @@
 
       document.getElementById('modalYearProgress').innerText = `${paidInYear.size}/12 Bulan Lunas`;
 
-      // Render 12 months badges
       const badgesCont = document.getElementById('modalMonthsBadges');
       badgesCont.innerHTML = MONTH_SHORT.map((mShort, idx) => {
         const mKey = ('0' + (idx + 1)).slice(-2);
@@ -1593,7 +1529,6 @@
         `;
       }).join('');
 
-      // Render transactions log
       const txCont = document.getElementById('modalMemberTransactions');
       if (memberItems.length === 0) {
         txCont.innerHTML = `<div class="py-6 text-center text-slate-400 text-xs">Belum ada catatan setoran untuk <strong>${name}</strong>.</div>`;
@@ -1628,7 +1563,6 @@
       document.getElementById('memberDetailModal').classList.add('hidden');
     }
 
-    // --- 12. TAB SWITCHING ---
     function switchTab(tabId) {
       activeTab = tabId;
       const tabs = ['matrix', 'members', 'expenses', 'history', 'stats', 'payment'];
@@ -1658,7 +1592,6 @@
       lucide.createIcons();
     }
 
-    // --- 13. WHATSAPP SHARE GENERATOR ---
     function copyWhatsAppReport() {
       const filteredInc = getFilteredIncomes();
       const filteredExp = getFilteredExpenses();
@@ -1695,7 +1628,6 @@
       });
     }
 
-    // --- 14. CONFIG MODAL ---
     function openConfigModal() {
       document.getElementById('cfgSheetId').value = appConfig.sheetId || '';
       document.getElementById('cfgSheetName').value = appConfig.sheetName || 'Kas';
@@ -1736,7 +1668,6 @@
       }
     }
 
-    // --- 15. INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
       initTheme();
       lucide.createIcons();
@@ -1745,3 +1676,4 @@
   </script>
 </body>
 </html>
+
