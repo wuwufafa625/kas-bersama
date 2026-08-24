@@ -203,11 +203,7 @@
     </section>
 
     <div class="flex items-center justify-between bg-slate-200/70 dark:bg-slate-900 p-1 rounded-2xl text-xs font-bold gap-1 overflow-x-auto">
-      <button onclick="switchTab('matrix')" id="tabBtn-matrix" class="flex-1 min-w-[100px] py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm">
-        <i data-lucide="grid" class="w-4 h-4"></i>
-        <span>Matriks Iuran</span>
-      </button>
-      <button onclick="switchTab('members')" id="tabBtn-members" class="flex-1 min-w-[95px] py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+      <button onclick="switchTab('members')" id="tabBtn-members" class="flex-1 min-w-[95px] py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 transition bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm">
         <i data-lucide="users" class="w-4 h-4"></i>
         <span>Anggota</span>
       </button>
@@ -229,54 +225,7 @@
       </button>
     </div>
 
-    <section id="tabContent-matrix" class="space-y-4">
-      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div>
-            <h3 class="font-bold text-sm md:text-base flex items-center gap-2 text-slate-800 dark:text-slate-100">
-              <i data-lucide="calendar-check-2" class="w-4 h-4 text-brand-600"></i>
-              Matriks Iuran Bulanan <span id="matrixYearTitle" class="text-brand-600 dark:text-brand-400">2026</span>
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Menampilkan status pembayaran per bulan untuk setiap peserta.</p>
-          </div>
-          <div class="flex items-center gap-3 text-xs">
-            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Lunas / Sudah Bayar</span>
-            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></span> Belum Bayar</span>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto rounded-xl border border-slate-200/70 dark:border-slate-800/70">
-          <table class="w-full text-xs text-left border-collapse min-w-[700px]">
-            <thead>
-              <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-800">
-                <th class="p-2.5 table-sticky-col bg-slate-100 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-800 min-w-[130px]">Nama Anggota</th>
-                <th class="p-2 text-center w-10">Jan</th>
-                <th class="p-2 text-center w-10">Feb</th>
-                <th class="p-2 text-center w-10">Mar</th>
-                <th class="p-2 text-center w-10">Apr</th>
-                <th class="p-2 text-center w-10">Mei</th>
-                <th class="p-2 text-center w-10">Jun</th>
-                <th class="p-2 text-center w-10">Jul</th>
-                <th class="p-2 text-center w-10">Agu</th>
-                <th class="p-2 text-center w-10">Sep</th>
-                <th class="p-2 text-center w-10">Okt</th>
-                <th class="p-2 text-center w-10">Nov</th>
-                <th class="p-2 text-center w-10">Des</th>
-                <th class="p-2 text-center font-extrabold min-w-[80px]">Total Terbayar</th>
-              </tr>
-            </thead>
-            <tbody id="matrixTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-
-            </tbody>
-            <tfoot id="matrixTableFoot" class="bg-brand-50/70 dark:bg-slate-800/90 font-bold border-t-2 border-brand-200 dark:border-brand-900">
-
-            </tfoot>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <section id="tabContent-members" class="hidden space-y-4">
+    <section id="tabContent-members" class="space-y-4">
       <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
 
         <div class="relative flex-1">
@@ -548,11 +497,7 @@
   </main>
 
   <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200/80 dark:border-slate-800/80 px-2 py-1.5 safe-bottom flex items-center justify-around text-[10px] font-bold">
-    <button onclick="switchTab('matrix')" id="navBtn-matrix" class="flex flex-col items-center gap-0.5 p-1 rounded-xl text-brand-600 dark:text-brand-400">
-      <i data-lucide="grid" class="w-5 h-5"></i>
-      <span>Matriks</span>
-    </button>
-    <button onclick="switchTab('members')" id="navBtn-members" class="flex flex-col items-center gap-0.5 p-1 rounded-xl text-slate-400 dark:text-slate-500">
+    <button onclick="switchTab('members')" id="navBtn-members" class="flex flex-col items-center gap-0.5 p-1 rounded-xl text-brand-600 dark:text-brand-400">
       <i data-lucide="users" class="w-5 h-5"></i>
       <span>Anggota</span>
     </button>
@@ -684,9 +629,9 @@
 
     let rawIncomes = [];
     let rawExpenses = [];
-    let availableYears = [2024, 2025, 2026, 2027];
+    let availableYears = [2025, 2026, 2027, 2028];
     let selectedYear = new Date().getFullYear().toString();
-    let activeTab = 'matrix';
+    let activeTab = 'members';
     let monthlyChartInstance = null;
     let viaChartInstance = null;
 
@@ -971,8 +916,7 @@
 
     function renderAll() {
       renderOverviewStats();
-      renderMatrixTable();
-      renderMembers();
+            renderMembers();
       renderExpenses();
       renderHistory();
       if (activeTab === 'stats') {
@@ -1020,113 +964,6 @@
 
       document.getElementById('statActiveMembers').innerText = `${activeCount} / ${totalDefined}`;
       document.getElementById('statMemberPct').innerText = `${pct}% anggota sudah menyetor`;
-    }
-
-    function renderMatrixTable() {
-      const displayYear = (selectedYear === 'all') ? new Date().getFullYear().toString() : selectedYear;
-      document.getElementById('matrixYearTitle').innerText = displayYear;
-
-      const memberMonthMap = {};
-      const monthlyTotals = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-      DEFAULT_MEMBERS.forEach(name => {
-        memberMonthMap[name] = {
-          name: name,
-          months: {},
-          totalYear: 0
-        };
-      });
-
-      rawIncomes.forEach(item => {
-        const name = item.name;
-        if (!memberMonthMap[name]) {
-          memberMonthMap[name] = { name: name, months: {}, totalYear: 0 };
-        }
-
-        const months = item.months || [];
-        months.forEach(mTag => {
-
-          const parts = mTag.split('-');
-          if (parts[0] === displayYear) {
-            const mIdx = parseInt(parts[1], 10) - 1;
-            if (mIdx >= 0 && mIdx < 12) {
-              const monthKey = parts[1];
-
-              const portionNominal = months.length > 0 ? Math.round(item.nominal / months.length) : item.nominal;
-
-              memberMonthMap[name].months[monthKey] = {
-                paid: true,
-                nominal: portionNominal,
-                date: item.date,
-                via: item.via
-              };
-              memberMonthMap[name].totalYear += portionNominal;
-              monthlyTotals[mIdx] += portionNominal;
-            }
-          }
-        });
-      });
-
-      const tbody = document.getElementById('matrixTableBody');
-      const tfoot = document.getElementById('matrixTableFoot');
-      const membersList = Object.values(memberMonthMap);
-
-      tbody.innerHTML = membersList.map((m, idx) => {
-        let monthCells = '';
-        let paidCount = 0;
-
-        for (let mi = 1; mi <= 12; mi++) {
-          const mKey = ('0' + mi).slice(-2);
-          const pInfo = m.months[mKey];
-          if (pInfo && pInfo.paid) {
-            paidCount++;
-            monthCells += `
-              <td class="p-2 text-center">
-                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 font-bold text-xs shadow-sm cursor-help" title="Lunas: ${formatRupiah(pInfo.nominal)} (${formatDateIndo(pInfo.date)})">
-                  ✓
-                </span>
-              </td>
-            `;
-          } else {
-            monthCells += `
-              <td class="p-2 text-center text-slate-300 dark:text-slate-700">
-                <span class="inline-block w-2 h-0.5 bg-slate-200 dark:bg-slate-800 rounded"></span>
-              </td>
-            `;
-          }
-        }
-
-        const isEven = idx % 2 === 0;
-        return `
-          <tr class="${isEven ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/50 dark:bg-slate-800/40'} hover:bg-brand-50/30 dark:hover:bg-slate-800 transition">
-            <td class="p-2.5 table-sticky-col ${isEven ? 'bg-white dark:bg-slate-900' : 'bg-slate-50 dark:bg-slate-800'} border-r border-slate-200 dark:border-slate-800 font-bold text-slate-800 dark:text-slate-100 flex items-center justify-between cursor-pointer" onclick="openMemberModal('${m.name}')">
-              <span>${m.name}</span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded-full ${paidCount > 0 ? 'bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-300' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'} font-extrabold">${paidCount}/12</span>
-            </td>
-            ${monthCells}
-            <td class="p-2 text-center font-extrabold ${m.totalYear > 0 ? 'text-brand-600 dark:text-brand-400' : 'text-slate-400'}">
-              ${formatRupiah(m.totalYear)}
-            </td>
-          </tr>
-        `;
-      }).join('');
-
-      const totalYearAll = monthlyTotals.reduce((a, b) => a + b, 0);
-      tfoot.innerHTML = `
-        <tr>
-          <td class="p-2.5 table-sticky-col bg-brand-100/90 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-800 font-extrabold text-slate-800 dark:text-slate-100">
-            Total Kas Masuk
-          </td>
-          ${monthlyTotals.map(tot => `
-            <td class="p-1.5 text-center text-[10px] font-black text-emerald-700 dark:text-emerald-400">
-              ${tot > 0 ? formatRupiah(tot).replace('Rp ', '') : '-'}
-            </td>
-          `).join('')}
-          <td class="p-2 text-center font-black text-xs text-brand-700 dark:text-brand-300">
-            ${formatRupiah(totalYearAll)}
-          </td>
-        </tr>
-      `;
     }
 
     function renderMembers() {
@@ -1617,7 +1454,7 @@
 
     function switchTab(tabId) {
       activeTab = tabId;
-      const tabs = ['matrix', 'members', 'expenses', 'history', 'stats', 'payment'];
+      const tabs = ['members', 'expenses', 'history', 'stats', 'payment'];
       tabs.forEach(t => {
         const content = document.getElementById(`tabContent-${t}`);
         const deskBtn = document.getElementById(`tabBtn-${t}`);
