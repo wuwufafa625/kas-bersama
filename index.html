@@ -958,7 +958,7 @@
                     ${isPaid ? '<i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500"></i>' : ''}
                   </h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400">
-                    ${m.count > 0 ? `${m.count}x setor ? Terakhir: ${formatDateIndo(m.lastDate)}` : 'Belum pernah setor'}
+                    ${m.count > 0 ? `${m.count}x setor &bull; Terakhir: ${formatDateIndo(m.lastDate)}` : 'Belum pernah setor'}
                   </p>
                 </div>
               </div>
@@ -1146,7 +1146,7 @@
       document.getElementById('modalMemberTotal').innerHTML = `
         <span class="font-extrabold text-xs text-brand-600 dark:text-brand-400 block">Total Iuran: ${formatRupiah(totalAll)}</span>
         <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 block mt-0.5">
-          Kas Kelas: <strong class="text-blue-600 dark:text-blue-400"></strong> ? Majlis: <strong class="text-teal-600 dark:text-teal-400">${formatRupiah(memberMajlisTalim)}</strong>
+          Kas Kelas: <strong class="text-blue-600 dark:text-blue-400">${formatRupiah(memberKasKelas)}</strong> &bull; Majlis: <strong class="text-teal-600 dark:text-teal-400">${formatRupiah(memberMajlisTalim)}</strong>
         </span>
       `;
 
@@ -1167,7 +1167,7 @@
         const isPaid = paidInYear.has(mKey);
         return `
           <span class="px-2 py-1 rounded-lg text-xs font-bold ${isPaid ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500'}">
-            ${isPaid ? '? ' : ''}${mShort}
+            ${isPaid ? '&#10003; ' : ''}${mShort}
           </span>
         `;
       }).join('');
@@ -1195,7 +1195,7 @@
               </p>
               <div class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-2">
                 <span>Kelas: <strong class="text-blue-600 dark:text-blue-400">${formatRupiah(txKelas)}</strong></span>
-                <span>?</span>
+                <span>&bull;</span>
                 <span>Majlis: <strong class="text-teal-600 dark:text-teal-400">${formatRupiah(txMajlis)}</strong></span>
               </div>
             </div>
@@ -1300,3 +1300,4 @@
   </script>
 </body>
 </html>
+
